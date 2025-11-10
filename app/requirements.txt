@@ -1,0 +1,17 @@
+# Dépendances Python pour la migration
+
+# Data manipulation
+pandas==2.1.4
+numpy==1.26.2
+
+# MongoDB driver
+pymongo==4.6.1
+
+# Configuration
+python-dotenv==1.0.0
+
+# Dataset download
+kagglehub==0.2.0
+
+# Logging
+colorlog==6.8.0

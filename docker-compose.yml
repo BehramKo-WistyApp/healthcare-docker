@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # ============================================================
+  # SERVICE 1 : MongoDB
+  # ============================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: healthcare_mongodb
+    restart: unless-stopped
+    
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    
+    ports:
+      - "27017:27017"
+    
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    
+    networks:
+      - healthcare_network
+    
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # ============================================================
+  # SERVICE 2 : Application Python (Migration)
+  # ============================================================
+  migration_app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: healthcare_migration
+    
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    
+    environment:
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_PORT: ${MONGODB_PORT}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      MONGODB_USERNAME: ${MONGODB_USERNAME}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      BATCH_SIZE: ${BATCH_SIZE}
+      LOG_LEVEL: ${LOG_LEVEL}
+    
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./app:/app/src
+    
+    networks:
+      - healthcare_network
+    
+    command: python /app/src/migration.py
+
+# ============================================================
+# VOLUMES (Persistance des données)
+# ============================================================
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+
+# ============================================================
+# RÉSEAUX
+# ============================================================
+networks:
+  healthcare_network:
+    driver: bridge

@@ -1,0 +1,30 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+
+# Fichiers de logs
+*.log
+logs/
+
+# Fichiers temporaires
+.DS_Store
+.env
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Documentation
+README.md
+docs/
