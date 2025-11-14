@@ -74,14 +74,16 @@ A patients_anonymized_view was created for analysts, masking personally identifi
 
 ## Authentication System and Roles
 ### Role Hierarchy (Principle of Least Privilege)
-Role 	        Read 	 Write 	     Index 	      Admin 	       Description
-ADMIN_MASTER 	✅ 	      ✅ 	     ✅ 	         ✅ 	      Full access, user management
-DATA_ENGINEER 	✅ 	      ✅ 	     ✅ 	         ❌ 	      Read/write on healthcare_db
-BACKEND_API 	✅ 	      ✅ 	     ❌ 	         ❌ 	      Targeted application operations
-ANALYST_ 	    ✅ 	      ❌ 	     ❌ 	         ❌ 	      Read-only on anonymized view
-DOCTOR_APP 	    ✅* 	      ✅* 	     ❌ 	         ❌ 	      Hospital-filtered access only
+```env
+Role 	              Read 	   Write 	     Index 	      Admin 	       Description
+ADMIN_MASTER      	✅ 	      ✅ 	        ✅ 	         ✅ 	         Full access, user management
+DATA_ENGINEER 	    ✅ 	      ✅ 	        ✅ 	         ❌ 	         Read/write on healthcare_db
+BACKEND_API 	      ✅ 	      ✅ 	        ❌ 	         ❌ 	         Targeted application operations
+ANALYST_ 	          ✅ 	      ❌ 	        ❌ 	         ❌ 	         Read-only on anonymized view
+DOCTOR_APP 	        ✅* 	    ✅* 	      ❌ 	         ❌ 	         Hospital-filtered access only
 
 ✅ = Full access | ❌ = No access | ✅ = Limited/filtered access*
+```
 
 
 ### Role Configuration Example
@@ -169,6 +171,8 @@ python migration.py
 
 ## Project Structure
 
+```env
+
 healthcare-docker/
 ├── app/
 │   ├── config.py              # Configuration and environment variables
@@ -188,12 +192,14 @@ healthcare-docker/
 ├── EXPLORATION_AWS_CLOUD.pdf  # PDF version of AWS exploration
 └── README.md                  # This file
 
+```
+
 
 ## Migration Results
 ### Key Metrics
 Metric 	                  Value
 Documents migrated 	      54,966 / 54,966 (100%)
-Success rate 	          100% ✅
+Success rate 	            100% ✅
 Total duration 	          2 min 23 sec
 Average speed 	          384 documents/sec
 Duplicates removed 	      534
@@ -288,6 +294,8 @@ EventBridge 	               Scheduled tasks 	                    Migration autom
 SNS 	                       Notifications 	                      Real-time alerts
 
 ### Architecture Diagram
+
+```env
 ┌─────────────┐
 │    Users    │
 └───────┬─────┘
@@ -314,6 +322,8 @@ SNS 	                       Notifications 	                      Real-time alert
 │  S3 + Glacier         │  ← Daily backups
 │  (Cross-region)       │
 └───────────────────┘
+
+```
 
 
 ### Estimated Cost
@@ -428,6 +438,10 @@ Development workflow:
     Commit your changes (git commit -m 'Add some AmazingFeature')
     Push to the branch (git push origin feature/AmazingFeature)
     Open a Pull Request
+
+
+
+
 
 # License
 
