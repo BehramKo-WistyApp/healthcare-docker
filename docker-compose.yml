@@ -31,6 +31,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 40s
+    
+    
 
   # ============================================================
   # SERVICE 2 : Application Python (Migration)
@@ -64,6 +66,29 @@ services:
     
     command: python /app/src/migration.py
 
+  # ============================================================
+  # SERVICE 3 : Tests unitaires
+  # ============================================================
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: healthcare_test
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: test_db
+      MONGODB_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGODB_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./tests:/app/tests
+      - ./app:/app/src
+    networks:
+      - healthcare_network
+    command: pytest /app/tests -v
+
 # ============================================================
 # VOLUMES (Persistance des données)
 # ============================================================
@@ -79,3 +104,5 @@ volumes:
 networks:
   healthcare_network:
     driver: bridge
+
+
